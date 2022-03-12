@@ -1,40 +1,13 @@
 import java.awt.{Color, Dimension, Graphics}
 import javax.swing.*
 
-case class Point(x: Float, y: Float)
-
-case class Triangle(a: Point, b: Point, c: Point)
-object Triangle:
-  def apply(centre: Point, side: Float, height: Float): Triangle =
-    val Point(x,y) = centre
-    val halfSide = 0.5F * side
-    val bottomLeft = Point(x - halfSide, y - 0.5F * height)
-    val bottomRight = Point(x + halfSide, y - 0.5F * height)
-    val top = Point(x, y + 0.5F * height )
-    Triangle(bottomLeft,bottomRight,top)
-
-extension (p: Point)
-  def deviceCoords(panelHeight: Int): (Int, Int) =
-    (Math.round(p.x), panelHeight - Math.round(p.y))
-
-@main def main: Unit =
-// Create the panel on the event dispatching thread.
-  SwingUtilities.invokeLater(
-    new Runnable():
-      def run: Unit = Triangles()
-  )
-
-class Triangles:
-  JFrame.setDefaultLookAndFeelDecorated(true)
-  val frame = new JFrame("Triangles: 50 triangles inside each other")
-  frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
-  frame.setSize(600, 400)
-  frame.add(TrianglesPanel())
-  frame.setVisible(true)
-
-class TrianglesPanel extends JPanel:
+object TrianglesPanel extends JPanel:
 
   setBackground(Color.white)
+
+  extension (p: Point)
+    def deviceCoords(panelHeight: Int): (Int, Int) =
+      (Math.round(p.x), panelHeight - Math.round(p.y))
 
   override def paintComponent(g: Graphics): Unit =
 
@@ -60,9 +33,9 @@ class TrianglesPanel extends JPanel:
 
     val draw: Triangle => Unit =
       case Triangle(a, b, c) =>
-      drawLine(a, b)
-      drawLine(b, c)
-      drawLine(c, a)
+        drawLine(a, b)
+        drawLine(b, c)
+        drawLine(c, a)
 
     val triangle = Triangle(panelCentre, triangleSide, triangleHeight)
 
